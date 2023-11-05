@@ -1,5 +1,6 @@
 As a student, I want to be able to record my time usage.  
 
-- As a user, I want to use a system that can record time using various date and time formats, including date in "YYYY/MM/DD" form and the option to specify "AM" or "PM."
-- As a user, I want to type "today 7:30 AM 8:30 PM studied Python :STUDY" as input and have that information stored in the database as a record
-- As a user, I want to query information from the database by DATE, TASK, or TAG. It should return all activities associated by the query.
+-  As a user, I want to type “today 09:30 10:30 ‘studied Java’ :STUDY” (DATE FROM TO TASK TAG format) as an input to make a record and store it in the database.
+- As a user, I want to type DATE and have all the activities associated with the date displayed.
+- As a user, I want to type TASK and have all activities associated with the task displayed.
+- As a user, I want to type TAG and have all activities associated with the tag displayed.
