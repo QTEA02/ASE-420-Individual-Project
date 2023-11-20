@@ -1,3 +1,96 @@
+import datetime
+import sqlite3
+
+
+class DatabaseHandler:
+    def __init__(self, connection_string):
+        self.conn = sqlite3.connect(connection_string)
+        self.cursor = self.conn.cursor()
+
+    def create_table(self, table_creation_query):
+        self.cursor.execute(table_creation_query)
+        self.conn.commit()
+
+    def execute_query(self, query, parameters=None):
+        if parameters:
+            self.cursor.execute(query, parameters)
+        else:
+            self.cursor.execute(query)
+        self.conn.commit()
+
+    def fetch_all(self, query, parameters=None):
+        if parameters:
+            self.cursor.execute(query, parameters)
+        else:
+            self.cursor.execute(query)
+        return self.cursor.fetchall()
+
+    def close_connection(self):
+        self.conn.close()
+
+
+class TimeRecord:
+    def __init__(self, date, start_time, end_time, task, tag):
+        self.date = date
+        self.start_time = start_time
+        self.end_time = end_time
+        self.task = task
+        self.tag = tag
+
+    @staticmethod
+    def parse_and_format_time(time_str):
+        try:
+            time_parts = time_str.split()
+            if len(time_parts) != 2:
+                raise ValueError("Invalid time format")
+
+            time_value = datetime.datetime.strptime(time_parts[0], "%I:%M")
+            if time_parts[1].lower() == 'pm':
+                time_value = time_value.replace(hour=time_value.hour + 12)
+
+            return time_value.strftime("%H:%M")
+
+        except ValueError as e:
+            raise ValueError(f"Error parsing time: {str(e)}")
+
+
+class TimeRecordRepository:
+    def __init__(self, database_handler):
+        self.database_handler = database_handler
+
+    def create_table(self):
+        self.database_handler.create_table('''CREATE TABLE IF NOT EXISTS time_records (
+                                              id INTEGER PRIMARY KEY,
+                                              record_date TEXT,
+                                              start_time TEXT,
+                                              end_time TEXT,
+                                              task TEXT,
+                                              tag TEXT
+                                          )''')
+
+    def record_time(self, time_record):
+        try:
+            formatted_start_time = TimeRecord.parse_and_format_time(time_record.start_time)
+            formatted_end_time = TimeRecord.parse_and_format_time(time_record.end_time)
+
+            self.database_handler.execute_query(
+                "INSERT INTO time_records (record_date, start_time, end_time, task, tag) VALUES (?, ?, ?, ?, ?)",
+                (time_record.date, formatted_start_time, formatted_end_time, time_record.task, time_record.tag)
+            )
+
+            return "Time recorded successfully!"
+        except ValueError as e:
+            return f"Error recording time: {str(e)}"
+        except Exception as e:
+            return f"An unexpected error occurred: {str(e)}"
+
+    def print_database(self):
+        records = self.database_handler.fetch_all("SELECT * FROM time_records")
+        print("\nDatabase Contents:")
+        for record in records:
+            print(record)
+
+
 class Query:
     def __init__(self, time_record_repository):
         self.time_record_repository = time_record_repository
@@ -124,8 +217,8 @@ class TimeRecordApp:
             tag = self.input_handler.get_user_input("Enter Tag: ", str)
 
             time_record = TimeRecord(date, start_time, end_time, task, tag)
-            self.time_record_repository.record_time(time_record)
-            print("Time recorded successfully!")
+            result_message = self.time_record_repository.record_time(time_record)
+            print(result_message)
         except ValueError as e:
             print(f"Error recording time: {str(e)}")
 
