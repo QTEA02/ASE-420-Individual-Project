@@ -228,7 +228,7 @@ class UserHandler:
             self.take_choice()
 
 
-if __name__ == "__main__":
+def main():
     connection_string = "time_records.db"
     db_handler = DatabaseHandler(connection_string)
     time_record_repository = TimeRecordRepository(db_handler)
@@ -239,3 +239,7 @@ if __name__ == "__main__":
     # Provide both time_record_app and query_handler to UserHandler
     time_record_app = UserHandler(time_record_repository, query_handler)
     time_record_app.run()
+
+
+if __name__ == "__main__":
+    main()
