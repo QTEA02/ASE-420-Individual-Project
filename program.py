@@ -19,13 +19,26 @@ class DatabaseHandler:
         self.cursor.execute(table_creation_query)
         self.conn.commit()
 
+    
+    # can be removed by using a list, and appending query and parmeters if you have them.
+    # ex add query to list. IF parameters, add parameters to list 
+    # after that you can use a spread operator with the execute() to input add args. 
     def execute_query(self, query, parameters=None):
-        if parameters:
+        if parameters is not None:
             self.cursor.execute(query, parameters)
-        else:
+            self.conn.commit()
+            return True
+        elif parameters is None:
             self.cursor.execute(query)
-        self.conn.commit()
-
+            self.conn.commit()
+            return True
+        else:
+            return False 
+        
+        
+    # can be removed by using a list, and appending query and parmeters if you have them.
+    # ex add query to list. IF parameters, add parameters to list 
+    # after that you can use a spread operator with the execute() to input add args. 
     def fetch_all(self, query, parameters=None):
         if parameters:
             self.cursor.execute(query, parameters)
@@ -36,50 +49,38 @@ class DatabaseHandler:
     def close_connection(self):
         self.conn.close()
 
-
-class TimeRecord:
-    def __init__(self, date, start_time, end_time, task, tag):
-        self.date = date
-        self.start_time = start_time
-        self.end_time = end_time
-        self.task = task
-        self.tag = tag
-
-    @staticmethod
-    def parse_and_format_time(time_str):
-        try:
-            time_parts = time_str.split()
-            if len(time_parts) != 2:
-                raise ValueError("Invalid time format")
-
-            time_value = datetime.datetime.strptime(time_parts[0], "%I:%M")
-            if time_parts[1].lower() == 'pm':
-                time_value = time_value.replace(hour=time_value.hour + 12)
-
-            return time_value.strftime("%H:%M")
-
-        except ValueError as e:
-            raise ValueError(f"Error parsing time: {str(e)}")
-
-
 class TimeRecordRepository:
     def __init__(self, database_handler):
         self.database_handler = database_handler
+        # added
+        self.date = ""
+        self.start_time = ""
+        self.end_time = ""
+        self.task = ""
+        self.tag = ""
+        self.formatted_start_time = ""
+        self.formatted_end_time = ""
 
+    # added
+    def get_user_input(self):
+        self.date = input("Enter Date (YYYY/MM/DD): ")
+        self.start_time = input("Enter Time from (HH:MM AM/PM): ")
+        self.end_time = input("Enter Time to (HH:MM AM/PM): ")
+        self.task = input("Enter Task: ")
+        self.tag = input("Enter Tag: ")
+
+        self.formatted_start_time = self.parse_and_format_time(self.start_time)
+        self.formatted_end_time = self.parse_and_format_time(self.end_time)
+
+        self.create_new_record()
+
+    # remove user input gathering function to another method
     def create_new_record(self):
         try:
-            date = input("Enter Date (YYYY/MM/DD): ")
-            start_time = input("Enter Time from (HH:MM AM/PM): ")
-            end_time = input("Enter Time to (HH:MM AM/PM): ")
-            task = input("Enter Task: ")
-            tag = input("Enter Tag: ")
-
-            formatted_start_time = self.parse_and_format_time(start_time)
-            formatted_end_time = self.parse_and_format_time(end_time)
-
+            #added self
             self.database_handler.execute_query(
                 "INSERT INTO time_records (record_date, start_time, end_time, task, tag) VALUES (?, ?, ?, ?, ?)",
-                (date, formatted_start_time, formatted_end_time, task, tag)
+                (self.date, self.formatted_start_time, self.formatted_end_time, self.task, self.tag)
             )
 
             print("Time recorded successfully!\n ")
@@ -213,7 +214,8 @@ class UserHandler:
 
     def provide_options(self):
         options = {
-            "1": self.time_record_app.create_new_record,
+            #changed to get-user_input
+            "1": self.time_record_app.get_user_input,
             "2": self.query_handler.query_records,
         }
 
@@ -224,7 +226,7 @@ class UserHandler:
             print("Invalid choice. Returning to the main menu.")
 
     def run(self):
-        while True:
+        #while True: #delete
             self.take_choice()
 
 
