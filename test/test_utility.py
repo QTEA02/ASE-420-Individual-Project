@@ -56,7 +56,6 @@ def test_create_table(setup_fixture):
     cursor.execute(f'DROP TABLE IF EXISTS test_time_records')
     connection.commit()
 
-    # Query the sqlite_master table to check if the table exists
     cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='test_time_records'")
     result = cursor.fetchone()
     results = result is None
@@ -115,16 +114,12 @@ def test_get_user_input(setup_fixture, monkeypatch):
     def mock_input(prompt):
         return user_input_values.pop(0)
 
-    # Apply the mock_input function to replace the built-in input function
     monkeypatch.setattr('builtins.input', mock_input)
 
-    # Create an instance of your class (replace YourClass with the actual class name)
     instance = TimeRecordRepository(setup_fixture[0])
-
-    # Call the method to test
+    
     instance.get_user_input()
 
-    # Check that the instance attributes are set correctly
     assert instance.date == "2023/12/01"
     assert instance.start_time == "09:00 AM"
     assert instance.end_time == "12:00 PM"
