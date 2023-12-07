@@ -1,5 +1,3 @@
-DatabaseHandler.py: 
-
 import sqlite3
 
 class DatabaseHandler:
