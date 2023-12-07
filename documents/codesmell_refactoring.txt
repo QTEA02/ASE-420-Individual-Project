@@ -1,1 +1,28 @@
+Week 4-5:
+First V1 Iteration
+1. Dead code for class TimeRecord.
+Refactoring: Remove class
 
+2. Data Duplication was found in the create_table method in DatabaseHandler which contains the same SQL query used for table creation as a string literal and in the execute_query method.
+Refactoring: Remove instances of table creation, and just have it reference the class that contains the instance.
+
+Second V1 Iteration
+3. Switch statements found in the QueryHandler class
+Refactoring:
+
+4. Nested while loop in the provide_options method of UserHandler 
+Refactoring:
+
+5. Magic numbers; the choices "1", "2", and "3" in the QueryHandler class 
+Refactoring:
+
+6. Mixed logic with UserHandler class, and TimeRecordRepository. UserHandler needs to handle only input logic. Violates SRP.
+Refactoring: (Maybe add an output handler class)
+
+
+Week 5-6:
+V2 Iteration
+7.
+8.
+9.
+10.
