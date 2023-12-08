@@ -116,13 +116,13 @@ def test_get_user_input(setup_fixture, monkeypatch):
 
     monkeypatch.setattr('builtins.input', mock_input)
 
-    instance = TimeRecordRepository(setup_fixture[0])
+    instance = setup_fixture[6]
    
     instance.get_user_input()
 
     assert instance.date == "2023/12/01"
-    assert instance.start_time == "09:00 AM"
-    assert instance.end_time == "12:00 PM"
+    assert instance.start_time == "09:00"
+    assert instance.end_time == "12:00"
     assert instance.task == "Sample Task"
     assert instance.tag == "Sample Tag"
 
@@ -133,13 +133,13 @@ def test_create_new_record(setup_fixture):
 
     cursor.execute(f'DELETE FROM time_records')
 
-    setup_fixture[1].date = "2023-10-01"
-    setup_fixture[1].formatted_start_time = "10:00"
-    setup_fixture[1].formatted_end_time = "23:00"
-    setup_fixture[1].task = "Sample Task2"
-    setup_fixture[1].tag = "Sample Tag2"
+    date = "2023-10-01"
+    start_time = "10:00"
+    end_time = "23:00"
+    task = "Sample Task2"
+    tag = "Sample Tag2"
 
-    setup_fixture[1].create_new_record()
+    setup_fixture[1].create_new_record(date, start_time, end_time, task, tag)
 
     query = "SELECT * FROM time_records WHERE task = 'Sample Task2'"
     cursor.execute(query)
@@ -154,10 +154,10 @@ def test_create_new_record(setup_fixture):
 
 def test_parse_and_format_time(setup_fixture):  
    
-    results = setup_fixture[1].parse_and_format_time("10:00 PM")
+    results = setup_fixture[6].parse_and_format_time("10:00 PM")
     assert results == "22:00"
 
-    results = setup_fixture[1].parse_and_format_time("10:00 AM")
+    results = setup_fixture[6].parse_and_format_time("10:00 AM")
     assert results == "10:00"
 
 def test_DateQuery_execute_query(setup_fixture, capsys):
@@ -167,13 +167,13 @@ def test_DateQuery_execute_query(setup_fixture, capsys):
 
     cursor.execute(f'DELETE FROM time_records')
 
-    setup_fixture[1].date = "2023/10/01"
-    setup_fixture[1].formatted_start_time = "10:00"
-    setup_fixture[1].formatted_end_time = "23:00"
-    setup_fixture[1].task = "Sample Task2"
-    setup_fixture[1].tag = "Sample Tag2"
+    date = "2023/10/01"
+    start_time = "10:00"
+    end_time = "23:00"
+    task = "Sample Task2"
+    tag = "Sample Tag2"
 
-    setup_fixture[1].create_new_record()
+    setup_fixture[1].create_new_record(date, start_time, end_time, task, tag)
 
     setup_fixture[2].execute_query('2023/10/01')
     captured = capsys.readouterr()
@@ -190,13 +190,13 @@ def test_TaskQuery_execute_query(setup_fixture, capsys):
 
     cursor.execute(f'DELETE FROM time_records')
 
-    setup_fixture[1].date = "2023/10/01"
-    setup_fixture[1].formatted_start_time = "10:00"
-    setup_fixture[1].formatted_end_time = "23:00"
-    setup_fixture[1].task = "Sample Task2"
-    setup_fixture[1].tag = "Sample Tag2"
+    date = "2023/10/01"
+    start_time = "10:00"
+    end_time = "23:00"
+    task = "Sample Task2"
+    tag = "Sample Tag2"
 
-    setup_fixture[1].create_new_record()
+    setup_fixture[1].create_new_record(date, start_time, end_time, task, tag)
 
     setup_fixture[3].execute_query('Sample Task2')
     captured = capsys.readouterr()
@@ -213,13 +213,13 @@ def test_TagQuery_execute_query(setup_fixture, capsys):
 
     cursor.execute(f'DELETE FROM time_records')
 
-    setup_fixture[1].date = "2023/10/01"
-    setup_fixture[1].formatted_start_time = "10:00"
-    setup_fixture[1].formatted_end_time = "23:00"
-    setup_fixture[1].task = "Sample Task2"
-    setup_fixture[1].tag = "Sample Tag2"
+    date = "2023/10/01"
+    start_time = "10:00"
+    end_time = "23:00"
+    task = "Sample Task2"
+    tag = "Sample Tag2"
 
-    setup_fixture[1].create_new_record()
+    setup_fixture[1].create_new_record(date, start_time, end_time, task, tag)
 
     setup_fixture[4].execute_query('Sample Tag2')
     captured = capsys.readouterr()
@@ -236,17 +236,17 @@ def test_query_records(setup_fixture, monkeypatch):
 
     cursor.execute(f'DELETE FROM time_records')
 
-    setup_fixture[1].date = "2023/10/01"
-    setup_fixture[1].formatted_start_time = "10:00"
-    setup_fixture[1].formatted_end_time = "23:00"
-    setup_fixture[1].task = "Sample Task2"
-    setup_fixture[1].tag = "Sample Tag2"
+    date = "2023/10/01"
+    start_time = "10:00"
+    end_time = "23:00"
+    task = "Sample Task2"
+    tag = "Sample Tag2"
 
-    setup_fixture[1].create_new_record()
+    setup_fixture[1].create_new_record(date, start_time, end_time, task, tag)
    
     user_input_values = [
-        "2",
-        "Sample Task2",    # Start Time
+        "task",
+        "Sample Task2",
     ]
 
     def mock_input(prompt):
@@ -265,17 +265,17 @@ def test_take_choice(setup_fixture, monkeypatch, capsys):
 
     cursor.execute(f'DELETE FROM time_records')
 
-    setup_fixture[1].date = "2023/10/01"
-    setup_fixture[1].formatted_start_time = "10:00"
-    setup_fixture[1].formatted_end_time = "23:00"
-    setup_fixture[1].task = "Sample Task2"
-    setup_fixture[1].tag = "Sample Tag2"
+    date = "2023/10/01"
+    start_time = "10:00"
+    end_time = "23:00"
+    task = "Sample Task2"
+    tag = "Sample Tag2"
 
-    setup_fixture[1].create_new_record()
+    setup_fixture[1].create_new_record(date, start_time, end_time, task, tag)
 
     user_input_values = [
         "2",
-        "2",
+        "task",
         "Sample Task2",
     ]
 
