@@ -1,9 +1,8 @@
 import datetime
 
 class UserHandler:
-    def __init__(self, time_record_app, query_handler):
+    def __init__(self, query_handler):
         self.choice = ""
-        self.time_record_app = time_record_app
         self.query_handler = query_handler
         self.date = ""
         self.start_time = ""
