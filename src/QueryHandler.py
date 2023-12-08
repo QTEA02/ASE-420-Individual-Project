@@ -1,3 +1,55 @@
+class Query:
+    def __init__(self, time_record_repository):
+        self.time_record_repository = time_record_repository
+
+    def execute_query(self, query_value):
+        pass
+
+class DateQuery(Query):
+    def execute_query(self, query_value):
+        records = self.time_record_repository.database_handler.fetch_all(
+            "SELECT * FROM time_records WHERE record_date = ?", (query_value,)
+        )
+        self.display_results(records)
+
+    def display_results(self, records):
+        if not records:
+            print(f"No records found.")
+        else:
+            print(f"\nQuery Results:")
+            for record in records:
+                print(record)
+
+class TaskQuery(Query):
+    def execute_query(self, query_value):
+        records = self.time_record_repository.database_handler.fetch_all(
+            "SELECT * FROM time_records WHERE task = ?", (query_value,)
+        )
+        self.display_results(records)
+
+    def display_results(self, records):
+        if not records:
+            print(f"No records found.")
+        else:
+            print(f"\nQuery Results:")
+            for record in records:
+                print(record)
+
+class TagQuery(Query):
+    def execute_query(self, query_value):
+        records = self.time_record_repository.database_handler.fetch_all(
+            "SELECT * FROM time_records WHERE tag = ?", (query_value,)
+        )
+        self.display_results(records)
+
+    def display_results(self, records):
+        if not records:
+            print(f"No records found.")
+        else:
+            print(f"\nQuery Results:")
+            for record in records:
+                print(record)
+
 class QueryHandler:
     QUERY_TYPES = {
         "date": DateQuery,
@@ -25,3 +77,7 @@ class QueryHandler:
             return True
         else:
             raise ValueError("Invalid choice for query type.")
+
+
+
+
