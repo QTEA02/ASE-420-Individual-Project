@@ -74,7 +74,7 @@ class DateRange(Query):
         if not records:
             print(f"No records found.")
         else:
-            print(f"\nQuery Results:")
+            print(f"\nReport Results:")
             for record in records:
                 print(record)
 
@@ -94,9 +94,12 @@ class Priority(Query):
         if not records:
             print(f"No records found.")
         else:
-            print(f"\nQuery Results:")
+            print(f"\nReport results:")
+            print(f"(Task Tag, Time in minutes)")
             for record in records:
-                print(record)
+                outList = [*record]
+                outList[1] = abs(int(record[1]) // 60)
+                print(outList)
 
 class QueryHandler:
     QUERY_TYPES = {
@@ -135,15 +138,17 @@ class QueryHandler:
 
             if query_type_choice.lower() == "range":
                 query_value = input(f"Enter the date range (YYYY/MM/DD-YYYY/MM/DD)")
-               
+                
                 while not validate_date_range_format(query_value):
                     print("Invalid date range")
                     query_value = input(f"Enter the date range (YYYY/MM/DD-YYYY/MM/DD)")
 
                 query = query_class(self.time_record_repository)
                 query.execute_query(query_value)
+                return True
             else:
                 query = query_class(self.time_record_repository)
                 query.execute_query()
+                return True
         else:
             raise ValueError("Invalid choice for query type.")
