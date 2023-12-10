@@ -8,6 +8,7 @@ from unittest.mock import patch
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 
+
 from program import main
 from DatabaseHandler import DatabaseHandler
 from TimeRecordRepository import TimeRecordRepository
@@ -15,6 +16,8 @@ from QueryHandler import DateQuery
 from QueryHandler import TaskQuery
 from QueryHandler import TagQuery
 from QueryHandler import QueryHandler
+from QueryHandler import DateRange
+from QueryHandler import Priority
 from UserHandler import UserHandler
 
 
@@ -43,9 +46,11 @@ def setup_fixture(scope="session"):
     tag_query = TagQuery(time_record_repository)
     query_handler = QueryHandler(time_record_repository)
     user_handler = UserHandler(time_record_repository, query_handler)
+    date_range = DateRange(time_record_repository)
+    priority = Priority(time_record_repository)
 
     objList = [data_handler, time_record_repository, date_query, task_query,
-               tag_query, query_handler, user_handler]
+               tag_query, query_handler, user_handler, date_range, priority]
 
     return objList  # You can return any other objects you want to use in your tests
 
@@ -291,3 +296,51 @@ def test_take_choice(setup_fixture, monkeypatch, capsys):
     captured = capsys.readouterr()
 
     assert "Sample Task2" in captured.out
+
+def test_DateRange_execute_query(setup_fixture, capsys):
+       
+    connection = setup_fixture[0].conn
+    cursor = connection.cursor()
+
+    cursor.execute(f'DELETE FROM time_records')
+
+    date = "2023/10/01"
+    start_time = "10:00"
+    end_time = "23:00"
+    task = "Sample Task2"
+    tag = "Sample Tag2"
+
+    setup_fixture[1].create_new_record(date, start_time, end_time, task, tag)
+
+    setup_fixture[7].execute_query('1111/11/11-3333/33/33')
+    captured = capsys.readouterr()
+    print(captured)
+    assert 'Sample Tag2' in captured.out
+   
+    setup_fixture[7].execute_query('1111/11/11-1111/33/13')
+    captured = capsys.readouterr()
+    assert 'No records found' in captured.out
+
+
+def test_Priority_execute_query(setup_fixture, capsys):
+       
+    connection = setup_fixture[0].conn
+    cursor = connection.cursor()
+
+    cursor.execute(f'DELETE FROM time_records')
+
+
+    date = "2023/10/01"
+    start_time = "10:00"
+    end_time = "23:00"
+    task = "Sample Task2"
+    tag = "Sample Tag2"
+
+    setup_fixture[1].create_new_record(date, start_time, end_time, task, tag)
+
+
+    setup_fixture[8].execute_query()
+    captured = capsys.readouterr()
+    print(captured)
+    assert 'Sample Tag2' in captured.out 
+    assert '780' in captured.out
