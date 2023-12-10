@@ -1,7 +1,5 @@
 Strategy Pattern:
 - The QueryHandler class encapsulates different query types (DateQuery, TaskQuery, TagQuery) as strategies for handling different types of queries.
 
-Dependency Injection:
-- The UserHandler class receives instances of time_record_app and query_handler through its constructor.
-
-
+Proxy:
+-  TimeRecordRepository class intercepts the communication between the handler and the database and creates the query. 
