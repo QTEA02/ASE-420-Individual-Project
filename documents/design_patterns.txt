@@ -3,3 +3,6 @@ Strategy Pattern:
 
 Proxy:
 -  TimeRecordRepository class intercepts the communication between the handler and the database and creates the query. 
+
+Mediator Pattern 
+- The main (program.py) file imports all of the classes, and is a centralized communication medium between all the classes in the program.
