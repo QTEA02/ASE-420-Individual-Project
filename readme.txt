@@ -7,7 +7,7 @@ The Time Tracking App allows users to record and query time records. Users can c
 
 It contains the following files:
 - main (program.py)
-- DatabaseHandler class which is responsible for creating the table and managing the session.
+- DatabaseHandler class which is responsible for creating the table and managing the session
 - QueryHandler class which is responsible for managing query search
 - TimeRecordRepository which is responsible for creating and storing new records
 - UserHandler class which is responsible for handling user input
