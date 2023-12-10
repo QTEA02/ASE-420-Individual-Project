@@ -1,3 +1,5 @@
+README
+
 Time Tracking App
 
 A simple time-tracking application to record and query time records.
