@@ -1,3 +1,15 @@
+import re
+
+def validate_date_range_format(input_string):
+    # Define the regular expression pattern
+    pattern = r'^\d{4}/\d{2}/\d{2}-\d{4}/\d{2}/\d{2}$'
+
+    # Use re.match() to check if the input string matches the pattern
+    if re.match(pattern, input_string):
+        return True
+    else:
+        return False
+
 class Query:
     def __init__(self, time_record_repository):
         self.time_record_repository = time_record_repository
@@ -50,11 +62,52 @@ class TagQuery(Query):
             for record in records:
                 print(record)
 
+class DateRange(Query):
+    def execute_query(self, query_value):
+        valueList = query_value.split('-')
+        records = self.time_record_repository.database_handler.fetch_all(
+            "SELECT * FROM tasks WHERE date_of_task BETWEEN ? AND ?", tuple(valueList)
+        )
+        self.display_results(records)
+
+    def display_results(self, records):
+        if not records:
+            print(f"No records found.")
+        else:
+            print(f"\nQuery Results:")
+            for record in records:
+                print(record)
+
+class Priority(Query):
+
+    def execute_query(self):
+        records = self.time_record_repository.database_handler.fetch_all(
+            '''SELECT task_tag,
+               SUM(strftime('%s', end_time_of_task) - strftime('%s', start_time_of_task)) AS total_duration
+        FROM tasks
+        GROUP BY task_tag
+        ORDER BY total_duration DESC''',()
+        )
+        self.display_results(records)
+
+    def display_results(self, records):
+        if not records:
+            print(f"No records found.")
+        else:
+            print(f"\nQuery Results:")
+            for record in records:
+                print(record)
+
 class QueryHandler:
     QUERY_TYPES = {
         "date": DateQuery,
         "task": TaskQuery,
         "tag": TagQuery,
+    }
+
+    REPORT_TYPES = {
+        "range": DateRange,
+        "priority": Priority
     }
 
     def __init__(self, time_record_repository):
@@ -65,8 +118,10 @@ class QueryHandler:
         print("Date")
         print("Task")
         print("Tag")
+        print("Date Range")
+        print("Priority")
 
-        query_type_choice = input("Enter your choice (date, task, or tag): ")
+        query_type_choice = input("Enter your choice (date, task, tag, range, priority): ")
 
         if query_type_choice.lower() in self.QUERY_TYPES:
             query_class = self.QUERY_TYPES[query_type_choice]
@@ -75,9 +130,20 @@ class QueryHandler:
             query = query_class(self.time_record_repository)
             query.execute_query(query_value)
             return True
+        elif query_type_choice.lower() in self.REPORT_TYPES:
+            query_class = self.REPORT_TYPES[query_type_choice]
+
+            if query_type_choice.lower() == "range":
+                query_value = input(f"Enter the date range (YYYY/MM/DD-YYYY/MM/DD)")
+               
+                while not validate_date_range_format(query_value):
+                    print("Invalid date range")
+                    query_value = input(f"Enter the date range (YYYY/MM/DD-YYYY/MM/DD)")
+
+                query = query_class(self.time_record_repository)
+                query.execute_query(query_value)
+            else:
+                query = query_class(self.time_record_repository)
+                query.execute_query()
         else:
             raise ValueError("Invalid choice for query type.")
-
-
-
-
