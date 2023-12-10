@@ -7,22 +7,22 @@ Refactoring: Remove class
 Refactoring: Remove instances of table creation, and just have it reference the class that contains the instance.
 
 Second V1 Iteration
-3. Switch statements found in the QueryHandler class
-Refactoring:
+3. provide_options is a lazy method in UserHandler class
+Refactoring: move the method body to where the method is called
 
-4. Nested while loop in the provide_options method of UserHandler 
-Refactoring:
+4. Inefficient algorithm in DatabaseHandler for execute_query and fetch_all
+Refactoring: Revise algorithm
 
-5. Magic numbers; the choices "1", "2", and "3" in the QueryHandler class 
-Refactoring:
+5. Magic numbers; the choices "1", "2", and "3" in the QueryHandler class
+Refactoring: Replace 1, 2, and 3 with descriptive names
 
 6. Mixed logic with UserHandler class, and TimeRecordRepository. UserHandler needs to handle only input logic. Violates SRP.
-Refactoring: (Maybe add an output handler class)
+Refactoring: Extract output logic and move to UserHandler
 
 
 Week 5-6:
 V2 Iteration
-7.
-8.
+7. The UserHandler class is a Large Class, as it handles display and input handling. Violates SRP.
+8. 
 9.
 10.
