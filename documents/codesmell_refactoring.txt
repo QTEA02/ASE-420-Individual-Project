@@ -24,5 +24,5 @@ Week 5-6:
 V2 Iteration
 7. The UserHandler class is a Large Class, as it handles display and input handling. Violates SRP.
 8. The comment '#changed to get-user_input' could be more descriptive or could be removed.
-9. 
-10.
+9. There are print statements scattered throughout the code, specifically for outputting the queries. There could be separate handlers or methods responsible for this functionality.
+10. Inconsistent Variable Naming. The use of both self. choice and task_to_do might be confusing. Consistent naming conventions improve code clarity. This goes for class names as well.
