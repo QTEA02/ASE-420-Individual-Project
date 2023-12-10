@@ -1,8 +1,8 @@
-Strategy Pattern:
+Strategy Pattern: Found on Dec. 1st, 2023
 - The QueryHandler class encapsulates different query types (DateQuery, TaskQuery, TagQuery) as strategies for handling different types of queries.
 
-Proxy:
+Proxy: Found on Dec. 8th, 2023
 -  TimeRecordRepository class intercepts the communication between the handler and the database and creates the query. 
 
-Mediator Pattern 
+Mediator Pattern: Found Dec. 8th, 2023
 - The main (program.py) file imports all of the classes, and is a centralized communication medium between all the classes in the program.
