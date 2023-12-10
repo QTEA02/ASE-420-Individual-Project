@@ -10,7 +10,7 @@ The Time Tracking App allows users to record and query time records. Users can c
 It contains the following files:
 - main (program.py)
 - DatabaseHandler class which is responsible for creating the table and managing the session
-- QueryHandler class which is responsible for managing query search
+- QueryHandler class which is responsible for managing the query search
 - TimeRecordRepository which is responsible for creating and storing new records
 - UserHandler class which is responsible for handling user input
 
@@ -27,9 +27,11 @@ It contains the following files:
 1. Run the application.
 2. Choose an option:
    - Enter `1` to input information and create a new record.
-   - Enter `2` to search for information based on date, task, or tag.
+   - Enter `2` to search for information based on date, task, tag, date range, or priority.
 
 ## Queries
 - **Date Query:** Search for records based on a specific date.
 - **Task Query:** Search for records based on a specific task.
 - **Tag Query:** Search for records based on a specific tag.
+- **DateRange:** Search for records between two specified dates.
+- **Priority** Display the task and tag and the corresponding time (in minutes) with the most has the most time spent.
