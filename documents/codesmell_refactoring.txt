@@ -23,6 +23,6 @@ Refactoring: Extract output logic and move to UserHandler
 Week 5-6:
 V2 Iteration
 7. The UserHandler class is a Large Class, as it handles display and input handling. Violates SRP.
-8. 
-9.
+8. The comment '#changed to get-user_input' could be more descriptive or could be removed.
+9. 
 10.
